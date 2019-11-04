@@ -1,48 +1,62 @@
-import React, { Component } from 'react';
-import app from '../firebaseConfig'
+import React, { Component, useContext, useState, useEffect } from 'react';
+import { AuthContext, AuthProvider } from './auth';
 
-// First we create our class
-class Login extends React.Component {
+
+const Login = () => {
+
+	//const [currentUser, setCurrentUser] = useState(null);
+	const {currentUser} = useContext(AuthContext);
+	const {firebase} = useContext(AuthContext);
 	
-	// Then we add our constructor which receives our props
-	constructor(props) {
-		super(props);
-		// Next we establish our state
-		this.state = {
-			name: '',
-			greeting: `Good ${this.props.time}, `
-		}
-		// To use the 'this' keyword, we need to bind it to our function
-		this.onChange = this.onChange.bind(this);
+	const [email, setEmail] = useState('demo@gmail.com');
+	const [pwd, setPwd] = useState('demo2019');
+
+	const onChangeEmail=(e)=>{
+		setEmail(e.target.value);
 	}
-	
-	// A custom function to change the name in our state to match the user input
-	onChange(e) {
-		this.setState({
-			name: e.target.value
-		})
+	const onChangePwd=(e)=>{
+		setPwd(e.target.value);
 	}
 
-	// The render function, where we actually tell the browser what it should show
-	render() {
-		return (
-			<div>
+	const signIn=(e)=>{
+		console.log(email);
+		firebase.auth().signInWithEmailAndPassword(email, pwd)
+			.then(function (result) {
+				//alert(result);
+				console.log(result);
+			}).catch(function (error) {
+				//alert(error);
+				console.log(error.code+' : '+error.messag);
+				console.log(error);
+			});
+		
+		//console.log(pwd);
+	}
+	const signOut=(e) =>{
+		firebase.auth().signOut();
+	}
+	return ( 
+		<div>	Login using custom UI:<hr></hr>
 				<section className="section">
 					<label className="label">Name:</label>
-					<input className="input" name="name" placeholder="Enter your name..." onChange={this.onChange} />
-					<input className="input" name="name" placeholder="Enter your name2..." onChange={this.onChange2} />
-					<input className="input" name="pwd" placeholder="password"></input>
+					<input className="input" name="name" placeholder="Email" value={email} onChange={onChangeEmail} /><br></br>
+					<label className="label">Pwd:</label>
+					<input className="input" name="pwd" placeholder="password" value={pwd} onChange={onChangePwd}></input><br></br>
+
 				</section>
-				<section className="section">
-					<p>{this.state.greeting} {this.state.name}</p>
-				</section>
+				
 
 				<section>
-					<button onClick={()=>app.auth().signOut()}>Sign Out</button>
+				<button onClick={signIn}>Sign In</button>
+				<button onClick={signOut}>Sign Out</button>
+				</section>
+
+				<section className="section">
+					Current Loggind in user : 
+					{currentUser.email}
 				</section>
 			</div>
-		)
-	}
+	 );
 }
-
+ 
 export default Login;

@@ -1,25 +1,15 @@
-import React, { Component } from 'react';
-import '../firebaseConfig'
-var firebase = require('firebase');
-//var firebaseui = require('firebaseui');
-var auth = firebase.auth();
+import React, { useContext } from 'react';
+import { AuthContext } from './auth';
 //auth.signOut();
 
-/*
-var ui = new firebaseui.auth.AuthUI(firebase.auth());
-ui.disableAutoSignIn();
- 
-ui.start('#firebaseui-auth-container', {
-    signInOptions: [
-      firebase.auth.EmailAuthProvider.PROVIDER_ID
-    ]
-    // Other config options...
-  });*/
-  
-const Home = () => (
+const Home = () => {
+  const {currentUser} = useContext(AuthContext);
+  console.log(currentUser);
+  return (
     <div>
-        Home<br></br>
-        <div id='firebaseui-auth-container'></div>
+      Home<hr></hr>
+      Current User : {currentUser.uid}
     </div>
-)
+  )
+}
 export default Home;
